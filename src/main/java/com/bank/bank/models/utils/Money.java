@@ -1,9 +1,11 @@
 package com.bank.bank.models.utils;
 
+import javax.persistence.Embeddable;
 import java.math.RoundingMode;
 import java.math.BigDecimal;
 import java.util.Currency;
 
+@Embeddable
 public class Money {
 
     private static final Currency USD = Currency.getInstance("USD");
@@ -11,6 +13,10 @@ public class Money {
 
     private final Currency currency;
     private BigDecimal amount;
+
+    public Money() {
+        currency = USD;
+    }
 
     /**
      * Class constructor specifying amount, currency, and rounding

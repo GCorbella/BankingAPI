@@ -3,13 +3,22 @@ package com.bank.bank.models.accounts;
 import com.bank.bank.models.AccountHolder;
 import com.bank.bank.models.utils.Money;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Entity
 public abstract class Account {
+    @Id
     private String id;
+    @Embedded
     private Money balance;
     private String secretKey;
+    @ManyToOne
+    @JoinColumn(name = "primary_owner")
     private AccountHolder primaryOwner;
+    @ManyToOne
+    @JoinColumn(name = "secondary_owner")
     private AccountHolder secondaryOwner;
     private LocalDate creationDate;
     private boolean Status;
