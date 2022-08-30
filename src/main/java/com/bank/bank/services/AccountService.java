@@ -1,5 +1,6 @@
 package com.bank.bank.services;
 
+import com.bank.bank.controllers.dto.TransferInfo;
 import com.bank.bank.models.AccountHolder;
 import com.bank.bank.models.accounts.Account;
 import com.bank.bank.models.accounts.Checking;
@@ -22,31 +23,33 @@ public class AccountService {
     AccountRepository accountRepository;
 
     public List<Object[]> checkBalance(String username) {
-        if (accountRepository.findByUsername(username).isPresent()){
-            AccountHolder accountHolder = accountRepository.findByUsername(username).get();
-            return accountRepository.checkBalance(accountHolder);
-        } else {
+        if (accountRepository.findByUsername(username).isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "This account/s doesn't exist.");
         }
+        AccountHolder accountHolder = accountRepository.findByUsername(username).get();
+        return accountRepository.checkBalance(accountHolder);
     }
 
     public List<Object[]> myAccount(String username) {
-        if (accountRepository.findByUsername(username).isPresent()){
-            AccountHolder accountHolder = accountRepository.findByUsername(username).get();
-            List<Account> primaryAccounts = accountHolder.getPrimaryAccounts();
-            List<Account> secondaryAccounts = accountHolder.getSecondaryAccounts();
-            applyInterestOrMaintenance(primaryAccounts, secondaryAccounts);
-            return accountRepository.checkBalance(accountHolder);
-        } else {
+        if (accountRepository.findByUsername(username).isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "This account/s doesn't exist or is/are not related to you.");
         }
+        AccountHolder accountHolder = accountRepository.findByUsername(username).get();
+        List<Account> primaryAccounts = accountHolder.getPrimaryAccounts();
+        List<Account> secondaryAccounts = accountHolder.getSecondaryAccounts();
+        applyInterestOrMaintenance(primaryAccounts, secondaryAccounts);
+        return accountRepository.checkBalance(accountHolder);
     }
 
     public List<Object[]> allAccounts() {
         return accountRepository.allAccounts();
     }
 
-    public void transfer(UserDetails userDetails, String originAccountId, String firstName, String lastName, String destinyAccountId, Money amount) {
+    public void transfer(UserDetails userDetails, TransferInfo transferInfo) {
+        AccountHolder accountHolder = retrieveAccountHolder(userDetails.getUsername(), "This username is not attached to any client of this bank.");
+        Account originAccount = retrieveAccount(transferInfo.getOriginAccountId(), "The origin account number is wrong or invalid.");
+        Account destinyAccount = retrieveAccount(transferInfo.getDestinyAccountId(), "The destiny account doesn't exist.");
+
         if (accountRepository.findByUsername(userDetails.getUsername()).isPresent()) {
             AccountHolder accountHolder = accountRepository.findByUsername(userDetails.getUsername()).get();
             if (accountRepository.findById(originAccountId).isPresent()) {
@@ -74,7 +77,7 @@ public class AccountService {
                             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The destiny account doesn't exist or it's not attached to that person.");
                         }
                     } else {
-                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The destiny account doesn't exist.");
+                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, );
                     }
                 } else {
                     throw new ResponseStatusException(HttpStatus.FORBIDDEN, "The origin account is not attached to you or you are not the primary owner.");
@@ -84,18 +87,6 @@ public class AccountService {
             }
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This username is not attached to any client of this bank.");
-        }
-
-        if (accountRepository.findByUsername(userDetails.getUsername()).isPresent()) {
-            AccountHolder accountHolder = accountRepository.findByUsername(userDetails.getUsername()).get();
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This username is not attached to any client of this bank.");
-        }
-
-        if (accountRepository.findById(originAccountId).isPresent()) {
-            Account originAccount = accountRepository.findById(originAccountId).get();
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The origin account number is wrong or invalid.");
         }
     }
 
@@ -120,5 +111,15 @@ public class AccountService {
             }
         }
 
+    }
+
+    public AccountHolder retrieveAccountHolder(String username, String errorMessage) {
+        return accountRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, errorMessage));
+    }
+
+    public Account retrieveAccount(String accountId, String errorMessage) {
+        return accountRepository.findById(accountId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, errorMessage));
     }
 }

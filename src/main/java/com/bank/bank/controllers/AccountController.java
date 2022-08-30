@@ -1,5 +1,6 @@
 package com.bank.bank.controllers;
 
+import com.bank.bank.controllers.dto.TransferInfo;
 import com.bank.bank.models.utils.Money;
 import com.bank.bank.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ public class AccountController {
 
     @PatchMapping("/myaccount/transfer")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void transfer(@AuthenticationPrincipal UserDetails userDetails, @RequestParam String originAccountId, @RequestParam String firstName, @RequestParam String lastName, @RequestParam String destinyAccountId, @RequestParam Money amount) {
-        accountService.transfer(userDetails, originAccountId, firstName, lastName, destinyAccountId, amount);
+    public void transfer(@AuthenticationPrincipal UserDetails userDetails, @RequestBody TransferInfo transferInfo) {
+        accountService.transfer(userDetails, transferInfo);
     }
 }
