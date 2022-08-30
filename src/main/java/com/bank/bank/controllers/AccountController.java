@@ -1,5 +1,6 @@
 package com.bank.bank.controllers;
 
+import com.bank.bank.models.utils.Money;
 import com.bank.bank.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -7,6 +8,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -23,7 +25,7 @@ public class AccountController {
 
     @GetMapping("/myaccount")
     @ResponseStatus(HttpStatus.OK)
-    public List<Object[]> myAccount( @AuthenticationPrincipal UserDetails userDetails) {
+    public List<Object[]> myAccount(@AuthenticationPrincipal UserDetails userDetails) {
         return accountService.myAccount(userDetails.getUsername());
     }
 
@@ -35,7 +37,7 @@ public class AccountController {
 
     @PatchMapping("/myaccount/transfer")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void transfer() {
-
+    public void transfer(@AuthenticationPrincipal UserDetails userDetails, @RequestParam String originAccountId, @RequestParam String firstName, @RequestParam String lastName, @RequestParam String destinyAccountId, @RequestParam Money amount) {
+        accountService.transfer(userDetails, originAccountId, firstName, lastName, destinyAccountId, amount);
     }
 }

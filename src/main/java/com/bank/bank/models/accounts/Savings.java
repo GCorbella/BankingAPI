@@ -56,7 +56,8 @@ public class Savings extends Account{
         //the maximum interest rate must be 0.5, if it's more, the script will limit it to = 0.5.
         if (interestRate.doubleValue() > 0.5){
             this.interestRate = BigDecimal.valueOf(0.5);
-        } else {
+        }
+        else {
             this.interestRate = interestRate;
         }
     }
