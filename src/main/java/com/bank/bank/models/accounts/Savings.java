@@ -27,8 +27,12 @@ public class Savings extends Account{
     }
 
     public void applyInterest(){
-        setInterestDate(LocalDate.now());
-        this.setBalance(new Money(this.getBalance().increaseAmount(this.getBalance().getAmount().multiply(interestRate.add(BigDecimal.valueOf(1))))));
+        if (LocalDate.now().getYear() > this.getInterestDate().getYear()) {
+            for (int i = LocalDate.now().getYear(); i > this.getInterestDate().getYear() ; i--) {
+                this.setBalance(new Money(this.getBalance().increaseAmount(this.getBalance().getAmount().multiply(interestRate.add(BigDecimal.valueOf(1))))));
+            }
+            setInterestDate(LocalDate.now());
+        }
     }
 
     //setters

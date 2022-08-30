@@ -46,14 +46,22 @@ public class AccountService {
 
     //auxiliary methods
     public void applyInterestOrMaintenance(List<Account> primaryAccounts, List<Account> secondaryAccounts) {
-
-        for (int i = 0; i < primaryAccounts.size(); i++) {
-            if (primaryAccounts.get(i) instanceof Savings) {
-                ((Savings) primaryAccounts.get(i)).applyInterest();
-            } else if (primaryAccounts.get(i) instanceof CreditCard) {
-                ((CreditCard) primaryAccounts.get(i)).applyInterest();
-            } else if (primaryAccounts.get(i) instanceof Checking) {
-                ((Checking) primaryAccounts.get(i)).applyMaintenanceFee();
+        for (Account primaryAccount : primaryAccounts) {
+            if (primaryAccount instanceof Savings) {
+                ((Savings) primaryAccount).applyInterest();
+            } else if (primaryAccount instanceof CreditCard) {
+                ((CreditCard) primaryAccount).applyInterest();
+            } else if (primaryAccount instanceof Checking) {
+                ((Checking) primaryAccount).applyMaintenanceFee();
+            }
+        }
+        for (Account secondaryAccount : secondaryAccounts) {
+            if (secondaryAccount instanceof Savings) {
+                ((Savings) secondaryAccount).applyInterest();
+            } else if (secondaryAccount instanceof CreditCard) {
+                ((CreditCard) secondaryAccount).applyInterest();
+            } else if (secondaryAccount instanceof Checking) {
+                ((Checking) secondaryAccount).applyMaintenanceFee();
             }
         }
 

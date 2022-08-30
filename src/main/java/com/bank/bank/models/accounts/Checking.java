@@ -17,7 +17,7 @@ public class Checking extends Account{
     @Embedded
     @AttributeOverrides({@AttributeOverride(name = "currency", column = @Column(name = "monthly_maintenance_fee_currency")), @AttributeOverride(name = "amount", column = @Column(name = "monthly_maintenance_fee_amount"))})
     private Money monthlyMaintenanceFee = new Money(BigDecimal.valueOf(12));
-    private LocalDate MaintenanceDate;
+    private LocalDate MaintenanceDate = this.getCreationDate();
 
     //constructor
     public Checking() {
@@ -33,14 +33,8 @@ public class Checking extends Account{
             for (int i = LocalDate.now().getMonthValue(); i > this.getMaintenanceDate().getMonthValue() ; i--) {
                 this.setBalance(new Money(this.getBalance().decreaseAmount(monthlyMaintenanceFee)));
             }
+            this.setMaintenanceDate(LocalDate.now());
         }
-        //this statement should only work once, when the account is accessed after creation
-        else if (LocalDate.now().getMonthValue() > this.getCreationDate().getMonthValue() && LocalDate.now().getYear() >= this.getCreationDate().getYear()) {
-            for (int i = LocalDate.now().getMonthValue(); i > this.getCreationDate().getMonthValue() ; i--) {
-                this.setBalance(new Money(this.getBalance().decreaseAmount(monthlyMaintenanceFee)));
-            }
-        }
-        this.setMaintenanceDate(LocalDate.now());
     }
 
     //setters
