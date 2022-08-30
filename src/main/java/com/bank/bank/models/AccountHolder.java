@@ -25,7 +25,9 @@ public class AccountHolder extends User{
     private String phoneNumber;
     private String eMail;
     @OneToMany(mappedBy = "primaryOwner")
-    private List<Account> accounts;
+    private List<Account> primaryAccounts;
+    @OneToMany(mappedBy = "secondaryOwner")
+    private List<Account> secondaryAccounts;
 
     public AccountHolder() {
     }
@@ -59,8 +61,12 @@ public class AccountHolder extends User{
         this.eMail = eMail;
     }
 
-    public void setAccounts(List<Account> accounts) {
-        this.accounts = accounts;
+    public void setPrimaryAccounts(List<Account> primaryAccounts) {
+        this.primaryAccounts = primaryAccounts;
+    }
+
+    public void setSecondaryAccounts(List<Account> secondaryAccounts) {
+        this.secondaryAccounts = secondaryAccounts;
     }
 
     //getters
@@ -92,7 +98,11 @@ public class AccountHolder extends User{
         return eMail;
     }
 
-    public List<Account> getAccounts() {
-        return accounts;
+    public List<Account> getPrimaryAccounts() {
+        return primaryAccounts;
+    }
+
+    public List<Account> getSecondaryAccounts() {
+        return secondaryAccounts;
     }
 }
