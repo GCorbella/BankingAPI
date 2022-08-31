@@ -1,5 +1,6 @@
 package com.bank.bank.models.accounts;
 
+import com.bank.bank.models.AccountHolder;
 import com.bank.bank.models.utils.Money;
 
 import javax.persistence.*;
@@ -9,18 +10,30 @@ import java.time.LocalDate;
 @Entity
 public class Checking extends Account{
     @Embedded
-    @AttributeOverrides({@AttributeOverride(name = "currency", column = @Column(name = "minimum_balance_currency")), @AttributeOverride(name = "amount", column = @Column(name = "minimum_balance_amount"))})
+    @AttributeOverrides({@AttributeOverride(name = "currency", column = @Column(name = "minimum_balance_currency")),
+            @AttributeOverride(name = "amount", column = @Column(name = "minimum_balance_amount"))})
     private Money minimumBalance = new Money(BigDecimal.valueOf(250));
     @Embedded
-    @AttributeOverrides({@AttributeOverride(name = "currency", column = @Column(name = "penalty_fee_currency")), @AttributeOverride(name = "amount", column = @Column(name = "penalty_fee_amount"))})
+    @AttributeOverrides({@AttributeOverride(name = "currency", column = @Column(name = "penalty_fee_currency")),
+            @AttributeOverride(name = "amount", column = @Column(name = "penalty_fee_amount"))})
     private Money penaltyFee = new Money(BigDecimal.valueOf(40));
     @Embedded
-    @AttributeOverrides({@AttributeOverride(name = "currency", column = @Column(name = "monthly_maintenance_fee_currency")), @AttributeOverride(name = "amount", column = @Column(name = "monthly_maintenance_fee_amount"))})
+    @AttributeOverrides({@AttributeOverride(name = "currency", column = @Column(name = "monthly_maintenance_fee_currency")),
+            @AttributeOverride(name = "amount", column = @Column(name = "monthly_maintenance_fee_amount"))})
     private Money monthlyMaintenanceFee = new Money(BigDecimal.valueOf(12));
     private LocalDate MaintenanceDate = this.getCreationDate();
 
     //constructor
     public Checking() {
+    }
+
+    public Checking(String id, Money balance, String secretKey, AccountHolder primaryOwner, LocalDate creationDate, boolean status) {
+        setId(id);
+        setBalance(balance);
+        setSecretKey(secretKey);
+        setPrimaryOwner(primaryOwner);
+        setCreationDate(creationDate);
+        setStatus(status);
     }
 
     //methods

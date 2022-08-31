@@ -1,5 +1,6 @@
 package com.bank.bank.models.accounts;
 
+import com.bank.bank.models.AccountHolder;
 import com.bank.bank.models.utils.Money;
 
 import javax.persistence.*;
@@ -9,16 +10,30 @@ import java.time.LocalDate;
 @Entity
 public class Savings extends Account{
     @Embedded
-    @AttributeOverrides({@AttributeOverride(name = "currency", column = @Column(name = "minimum_balance_currency")), @AttributeOverride(name = "amount", column = @Column(name = "minimum_balance_amount"))})
+    @AttributeOverrides({@AttributeOverride(name = "currency", column = @Column(name = "minimum_balance_currency")),
+            @AttributeOverride(name = "amount", column = @Column(name = "minimum_balance_amount"))})
     private Money minimumBalance = new Money(BigDecimal.valueOf(1000));//the default minimum balance is 1000, but it can be lowered until 100
     @Embedded
-    @AttributeOverrides({@AttributeOverride(name = "currency", column = @Column(name = "penalty_fee_currency")), @AttributeOverride(name = "amount", column = @Column(name = "penalty_fee_amount"))})
+    @AttributeOverrides({@AttributeOverride(name = "currency", column = @Column(name = "penalty_fee_currency")),
+            @AttributeOverride(name = "amount", column = @Column(name = "penalty_fee_amount"))})
     private Money penaltyFee = new Money(BigDecimal.valueOf(40));
     private BigDecimal interestRate = BigDecimal.valueOf(0.0025); //the default value of the interest rate is 0.0025, and the maximum is 0.5
     private LocalDate interestDate = getCreationDate();
 
     //constructor
     public Savings() {
+    }
+
+    public Savings(String id, Money balance, String secretKey, AccountHolder primaryOwner, LocalDate creationDate,
+                   boolean status, Money minimumBalance, BigDecimal interestRate) {
+        setId(id);
+        setBalance(balance);
+        setSecretKey(secretKey);
+        setPrimaryOwner(primaryOwner);
+        setCreationDate(creationDate);
+        setStatus(status);
+        setMinimumBalance(minimumBalance);
+        setInterestRate(interestRate);
     }
 
     //methods

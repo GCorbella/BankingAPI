@@ -1,5 +1,6 @@
 package com.bank.bank.models.accounts;
 
+import com.bank.bank.models.AccountHolder;
 import com.bank.bank.models.utils.Money;
 import com.sun.xml.bind.v2.TODO;
 
@@ -10,16 +11,30 @@ import java.time.LocalDate;
 @Entity
 public class CreditCard extends Account{
     @Embedded
-    @AttributeOverrides({@AttributeOverride(name = "currency", column = @Column(name = "credit_limit_currency")), @AttributeOverride(name = "amount", column = @Column(name = "credit_limit_amount"))})
+    @AttributeOverrides({@AttributeOverride(name = "currency", column = @Column(name = "credit_limit_currency")),
+            @AttributeOverride(name = "amount", column = @Column(name = "credit_limit_amount"))})
     private Money creditLimit = new Money(BigDecimal.valueOf(100)); //the default credit limit is 100, but it can be increased until 100000
     private BigDecimal interestRate = BigDecimal.valueOf(0.2); //the default interest rate is 0.2, but it can be decreased until 0.1
     @Embedded
-    @AttributeOverrides({@AttributeOverride(name = "currency", column = @Column(name = "penalty_fee_currency")), @AttributeOverride(name = "amount", column = @Column(name = "penalty_fee_amount"))})
+    @AttributeOverrides({@AttributeOverride(name = "currency", column = @Column(name = "penalty_fee_currency")),
+            @AttributeOverride(name = "amount", column = @Column(name = "penalty_fee_amount"))})
     private Money penaltyFee = new Money(BigDecimal.valueOf(40));
     private LocalDate interestDate = getCreationDate();
 
     //constructor
     public CreditCard() {
+    }
+
+    public CreditCard(String id, Money balance, String secretKey, AccountHolder primaryOwner, LocalDate creationDate,
+                      boolean status, Money creditLimit, BigDecimal interestRate) {
+        setId(id);
+        setBalance(balance);
+        setSecretKey(secretKey);
+        setPrimaryOwner(primaryOwner);
+        setCreationDate(creationDate);
+        setStatus(status);
+        setCreditLimit(creditLimit);
+        setInterestRate(interestRate);
     }
 
     //methods
@@ -28,7 +43,8 @@ public class CreditCard extends Account{
     }
 
     public void applyInterest(){
-        if (LocalDate.now().getMonthValue() > this.getInterestDate().getMonthValue() && LocalDate.now().getYear() >= this.getInterestDate().getYear()) {
+        if (LocalDate.now().getMonthValue() > this.getInterestDate().getMonthValue() &&
+                LocalDate.now().getYear() >= this.getInterestDate().getYear()) {
             for (int i = LocalDate.now().getMonthValue(); i > this.getInterestDate().getMonthValue() ; i--) {
                 this.setBalance(new Money(this.getBalance().increaseAmount(this.getBalance().getAmount().multiply(interestRate.add(BigDecimal.valueOf(1))))));
             }

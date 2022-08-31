@@ -1,13 +1,11 @@
 package com.bank.bank.services;
 
+import com.bank.bank.controllers.dto.AccountDTO;
 import com.bank.bank.controllers.dto.TransferInfo;
 import com.bank.bank.models.AccountHolder;
-import com.bank.bank.models.accounts.Account;
-import com.bank.bank.models.accounts.Checking;
-import com.bank.bank.models.accounts.CreditCard;
-import com.bank.bank.models.accounts.Savings;
+import com.bank.bank.models.accounts.*;
 import com.bank.bank.models.utils.Money;
-import com.bank.bank.repositories.AccountRepository;
+import com.bank.bank.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -22,6 +21,16 @@ public class AccountService {
 
     @Autowired
     AccountRepository accountRepository;
+    @Autowired
+    CheckingRepository checkingRepository;
+    @Autowired
+    StudentCheckingRepository studentCheckingRepository;
+    @Autowired
+    SavingsRepository savingsRepository;
+    @Autowired
+    CreditCardRepository creditCardRepository;
+    @Autowired
+    AccountHolderRepository accountHolderRepository;
 
     public List<Object[]> checkBalance(String username) {
         if (accountRepository.findByUsername(username).isEmpty()){
@@ -44,6 +53,38 @@ public class AccountService {
 
     public List<Object[]> allAccounts() {
         return accountRepository.allAccounts();
+    }
+
+    public Account createAccount(AccountDTO accountDTO, Long accountHolderId) {
+        if (accountHolderRepository.findById(accountHolderId).isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This account holder ID is not attached to any of our clients.");
+        }
+        AccountHolder accountHolder = accountHolderRepository.findById(accountHolderId).get();
+        LocalDate dateOfBirth = accountHolder.getDateOfBirth();
+        switch (accountDTO.getAccountType()) {
+            case "checking" -> {
+                if (LocalDate.now().getYear() - dateOfBirth.getYear() <= 24) {
+                    StudentChecking account = createStudentsCheckingAccount(accountDTO, accountHolder);
+                    studentCheckingRepository.save(account);
+                    return account;
+                }
+                Checking account = createCheckingAccount(accountDTO, accountHolder);
+                checkingRepository.save(account);
+                return account;
+
+            }
+            case "savings" -> {
+                Savings account = createSavingsAccount(accountDTO, accountHolder);
+                savingsRepository.save(account);
+                return account;
+            }
+            case "creditcard" -> {
+                CreditCard account = createCreditCardAccount(accountDTO, accountHolder);
+                creditCardRepository.save(account);
+                return account;
+            }
+        }
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Introduce a valid type of account in all lowercase.");
     }
 
     public void transfer(UserDetails userDetails, TransferInfo transferInfo) {
@@ -121,6 +162,54 @@ public class AccountService {
             }
         }
 
+    }
+
+    public Checking createCheckingAccount (AccountDTO accountDTO, AccountHolder accountHolder) {
+        return new Checking(
+                accountDTO.getId(),
+                accountDTO.getBalance(),
+                accountDTO.getSecretKey(),
+                accountHolder,
+                LocalDate.now(),
+                true
+                );
+    }
+
+    public StudentChecking createStudentsCheckingAccount (AccountDTO accountDTO, AccountHolder accountHolder) {
+        return new StudentChecking(
+                accountDTO.getId(),
+                accountDTO.getBalance(),
+                accountDTO.getSecretKey(),
+                accountHolder,
+                LocalDate.now(),
+                true
+        );
+    }
+
+    public Savings createSavingsAccount (AccountDTO accountDTO, AccountHolder accountHolder) {
+        return new Savings(
+                accountDTO.getId(),
+                accountDTO.getBalance(),
+                accountDTO.getSecretKey(),
+                accountHolder,
+                LocalDate.now(),
+                true,
+                accountDTO.getMinimumBalance(),
+                accountDTO.getInterestRate()
+        );
+    }
+
+    public CreditCard createCreditCardAccount (AccountDTO accountDTO, AccountHolder accountHolder) {
+        return new CreditCard(
+                accountDTO.getId(),
+                accountDTO.getBalance(),
+                accountDTO.getSecretKey(),
+                accountHolder,
+                LocalDate.now(),
+                true,
+                accountDTO.getCreditLimit(),
+                accountDTO.getInterestRate()
+        );
     }
 
     public AccountHolder retrieveAccountHolder(String username, String errorMessage) {

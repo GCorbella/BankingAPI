@@ -1,6 +1,8 @@
 package com.bank.bank.controllers;
 
+import com.bank.bank.controllers.dto.AccountDTO;
 import com.bank.bank.controllers.dto.TransferInfo;
+import com.bank.bank.models.AccountHolder;
 import com.bank.bank.models.accounts.Account;
 import com.bank.bank.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,12 @@ public class AccountController {
     @ResponseStatus(HttpStatus.OK)
     public List<Object[]> allAccounts() {
         return accountService.allAccounts();
+    }
+
+    @PostMapping("/create-account")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Account createAccount(@RequestBody AccountDTO accountDTO, @RequestParam Long accountHolderId) {
+        return accountService.createAccount(accountDTO, accountHolderId);
     }
 
     @PatchMapping("/myaccount/transfer")
