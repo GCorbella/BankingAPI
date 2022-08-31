@@ -7,4 +7,6 @@ import javax.persistence.Id;
 public class ThirdParty {
     @Id
     private Long id;
+    private String name;
+    private String
 }

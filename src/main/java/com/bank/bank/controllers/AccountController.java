@@ -1,7 +1,7 @@
 package com.bank.bank.controllers;
 
 import com.bank.bank.controllers.dto.TransferInfo;
-import com.bank.bank.models.utils.Money;
+import com.bank.bank.models.accounts.Account;
 import com.bank.bank.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,5 +40,11 @@ public class AccountController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void transfer(@AuthenticationPrincipal UserDetails userDetails, @RequestBody TransferInfo transferInfo) {
         accountService.transfer(userDetails, transferInfo);
+    }
+
+    @PatchMapping("/modify-balance")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public Account modifyBalance(@RequestParam String accountID, @RequestParam BigDecimal newBalance) {
+        return accountService.modifyBalance(accountID, newBalance);
     }
 }

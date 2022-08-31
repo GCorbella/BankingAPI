@@ -91,6 +91,15 @@ public class AccountService {
         }
     }
 
+    public Account modifyBalance(String accountId, BigDecimal newBalance) {
+        if (accountRepository.findById(accountId).isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no account with that ID.");
+        }
+        Account account = accountRepository.findById(accountId).get();
+        account.setBalance(new Money(newBalance));
+        return account;
+    }
+
     //auxiliary methods
     public void applyInterestOrMaintenance(List<Account> primaryAccounts, List<Account> secondaryAccounts) {
         for (Account primaryAccount : primaryAccounts) {
