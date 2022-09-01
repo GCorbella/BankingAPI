@@ -13,6 +13,11 @@ public class ThirdParty {
     public ThirdParty() {
     }
 
+    public ThirdParty(String name, String hashedKey) {
+        setName(name);
+        setHashedKey(hashedKey);
+    }
+
     //setters
     public void setId(Long id) {
         this.id = id;

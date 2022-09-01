@@ -20,7 +20,7 @@ import java.util.List;
 public class AccountService {
 
     @Autowired
-    private final AccountRepository accountRepository;
+    private static AccountRepository accountRepository;
     @Autowired
     private final CheckingRepository checkingRepository;
     @Autowired
@@ -31,21 +31,41 @@ public class AccountService {
     private final CreditCardRepository creditCardRepository;
     @Autowired
     private final AccountHolderRepository accountHolderRepository;
+    @Autowired
+    private static ThirdPartyRepository thirdPartyRepository;
 
     //service constructor
-    public AccountService(AccountRepository accountRepository, CheckingRepository checkingRepository, StudentCheckingRepository studentCheckingRepository, SavingsRepository savingsRepository, CreditCardRepository creditCardRepository, AccountHolderRepository accountHolderRepository) {
-        this.accountRepository = accountRepository;
+    public AccountService(AccountRepository accountRepository, CheckingRepository checkingRepository, StudentCheckingRepository studentCheckingRepository, SavingsRepository savingsRepository, CreditCardRepository creditCardRepository, AccountHolderRepository accountHolderRepository, ThirdPartyRepository thirdPartyRepository) {
+        AccountService.accountRepository = accountRepository;
         this.checkingRepository = checkingRepository;
         this.studentCheckingRepository = studentCheckingRepository;
         this.savingsRepository = savingsRepository;
         this.creditCardRepository = creditCardRepository;
         this.accountHolderRepository = accountHolderRepository;
+        AccountService.thirdPartyRepository = thirdPartyRepository;
+    }
+    //methods
+    public static void sendMoneyToThirdParty(String hashedKey, String username, int amount, String accountId, String accountSecretKey) {
+        if (thirdPartyRepository.findByHashedKey(hashedKey).isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong Hashed Key");
+        }
+        if (accountRepository.findById(accountId).isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This account doesn't exist.");
+        }
+        Account account = accountRepository.findById(accountId).get();
+        if (!account.getPrimaryOwner().getUsername().equals(username) ||
+                !account.getSecondaryOwner().getUsername().equals(username)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This account doesn't belong to you.");
+        }
+        if (!account.getSecretKey().equals(accountSecretKey)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This account doesn't exist and/or the secret key is wrong.");
+        }
+        account.setBalance(new Money(account.getBalance().decreaseAmount(BigDecimal.valueOf(amount))));
     }
 
-    //methods
     public List<Object[]> checkBalance(String username) {
         if (accountHolderRepository.findByUsername(username).isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "This account/s doesn't exist.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This account/s doesn't exist.");
         }
         AccountHolder accountHolder = accountHolderRepository.findByUsername(username).get();
         return accountRepository.checkBalance(accountHolder);
@@ -53,7 +73,7 @@ public class AccountService {
 
     public List<Object[]> myAccount(String username) {
         if (accountHolderRepository.findByUsername(username).isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "This account/s doesn't exist or is/are not related to you.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This account/s doesn't exist or is/are not related to you.");
         }
         AccountHolder accountHolder = accountHolderRepository.findByUsername(username).get();
         List<Account> primaryAccounts = accountHolder.getPrimaryAccounts();
@@ -107,7 +127,7 @@ public class AccountService {
         }
 
         if(accountRepository.findById(transferInfo.getDestinyAccountId()).isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "The destiny account doesn't exist.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The destiny account doesn't exist.");
         }
         Account destinyAccount = retrieveAccount(transferInfo.getDestinyAccountId(), "The destiny account doesn't exist.");
         String destinyPrimaryOwnerFName = destinyAccount.getPrimaryOwner().getFirstName();

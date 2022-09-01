@@ -16,14 +16,10 @@ import java.time.LocalDate;
 public class AccountHolderService {
 
     @Autowired
-    private final AccountHolderRepository accountHolderRepository;
-
-    @Autowired
     private final RoleRepository roleRepository;
 
     //constructor
-    public AccountHolderService(AccountHolderRepository accountHolderRepository, RoleRepository roleRepository) {
-        this.accountHolderRepository = accountHolderRepository;
+    public AccountHolderService(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
     }
 

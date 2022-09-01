@@ -2,7 +2,6 @@ package com.bank.bank.controllers;
 
 import com.bank.bank.controllers.dto.AccountDTO;
 import com.bank.bank.controllers.dto.TransferInfo;
-import com.bank.bank.models.AccountHolder;
 import com.bank.bank.models.accounts.Account;
 import com.bank.bank.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,11 @@ import java.util.List;
 public class AccountController {
 
     @Autowired
-    AccountService accountService;
+    private final AccountService accountService;
+
+    public AccountController(AccountService accountService) {
+        this.accountService = accountService;
+    }
 
     @GetMapping("/check-balance")
     @ResponseStatus(HttpStatus.OK)
@@ -54,5 +57,15 @@ public class AccountController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public Account modifyBalance(@RequestParam String accountID, @RequestParam BigDecimal newBalance) {
         return accountService.modifyBalance(accountID, newBalance);
+    }
+
+    @PatchMapping("/myaccount/send/{hashedKey}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void sendMoneyToThirdParty(@PathVariable String hashedKey,
+                                      @AuthenticationPrincipal UserDetails userDetails,
+                                      @RequestParam int amount,
+                                      @RequestParam String accountId,
+                                      @RequestParam String accountSecretKey) {
+        AccountService.sendMoneyToThirdParty(hashedKey, userDetails.getUsername(), amount, accountId, accountSecretKey);
     }
 }
