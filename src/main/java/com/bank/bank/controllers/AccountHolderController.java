@@ -13,9 +13,9 @@ public class AccountHolderController {
     @Autowired
     AccountHolderService accountHolderService;
 
-    @PostMapping("/new-user")
+    /*@PostMapping("/new-user")
     @ResponseStatus(HttpStatus.CREATED)
     public AccountHolder createAccountHolder(@RequestBody AccountHolderDTO accountHolderDTO) {
         return accountHolderService.createAccountHolder(accountHolderDTO);
-    }
+    }*/
 }

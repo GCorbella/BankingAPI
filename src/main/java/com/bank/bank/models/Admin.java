@@ -12,6 +12,12 @@ public class Admin extends User{
     public Admin() {
     }
 
+    public Admin(String username, String password, String name) {
+        setUsername(username);
+        setPassword(password);
+        setName(name);
+    }
+
     //setter
     public void setName(String name) {
         this.name = name;

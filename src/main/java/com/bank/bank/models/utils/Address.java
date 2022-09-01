@@ -18,6 +18,12 @@ public class Address {
     public Address() {
     }
 
+    public Address(String street, int portal, String streetOtherInfo) {
+        setStreet(street);
+        setPortal(portal);
+        setOtherInfo(streetOtherInfo);
+    }
+
     //setters
     public void setId(Long id) {
         this.id = id;

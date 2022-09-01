@@ -12,8 +12,6 @@ import java.util.Optional;
 @Repository
 public interface AccountRepository extends JpaRepository<Account, String> {
 
-    Optional<AccountHolder> findByUsername(String username);
-
     @Query(value = "SELECT id, amount, currency FROM account WHERE primary_owner = accountHolder OR secondary_owner = accountHolder", nativeQuery = true)
     List<Object[]> checkBalance(AccountHolder accountHolder);
 

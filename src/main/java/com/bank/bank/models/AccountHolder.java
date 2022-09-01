@@ -32,6 +32,19 @@ public class AccountHolder extends User{
     public AccountHolder() {
     }
 
+    public AccountHolder(String username, String password, String firstName, String lastName, LocalDate dateOfBirth,
+                         Address primaryAddress, Address mailingAddress, String phoneNumber, String eMail) {
+        setUsername(username);
+        setPassword(password);
+        setFirstName(firstName);
+        setLastName(lastName);
+        setDateOfBirth(dateOfBirth);
+        setPrimaryAddress(primaryAddress);
+        setMailingAddress(mailingAddress);
+        setPhoneNumber(phoneNumber);
+        seteMail(eMail);
+    }
+
     //setters
     public void setFirstName(String firstName) {
         this.firstName = firstName;

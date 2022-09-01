@@ -14,7 +14,7 @@ public class User {
     private String username;
     private String password;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Role> roles = new HashSet<>();
 
     public User() {

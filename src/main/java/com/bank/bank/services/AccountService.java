@@ -20,31 +20,42 @@ import java.util.List;
 public class AccountService {
 
     @Autowired
-    AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
     @Autowired
-    CheckingRepository checkingRepository;
+    private final CheckingRepository checkingRepository;
     @Autowired
-    StudentCheckingRepository studentCheckingRepository;
+    private final StudentCheckingRepository studentCheckingRepository;
     @Autowired
-    SavingsRepository savingsRepository;
+    private final SavingsRepository savingsRepository;
     @Autowired
-    CreditCardRepository creditCardRepository;
+    private final CreditCardRepository creditCardRepository;
     @Autowired
-    AccountHolderRepository accountHolderRepository;
+    private final AccountHolderRepository accountHolderRepository;
 
+    //service constructor
+    public AccountService(AccountRepository accountRepository, CheckingRepository checkingRepository, StudentCheckingRepository studentCheckingRepository, SavingsRepository savingsRepository, CreditCardRepository creditCardRepository, AccountHolderRepository accountHolderRepository) {
+        this.accountRepository = accountRepository;
+        this.checkingRepository = checkingRepository;
+        this.studentCheckingRepository = studentCheckingRepository;
+        this.savingsRepository = savingsRepository;
+        this.creditCardRepository = creditCardRepository;
+        this.accountHolderRepository = accountHolderRepository;
+    }
+
+    //methods
     public List<Object[]> checkBalance(String username) {
-        if (accountRepository.findByUsername(username).isEmpty()){
+        if (accountHolderRepository.findByUsername(username).isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "This account/s doesn't exist.");
         }
-        AccountHolder accountHolder = accountRepository.findByUsername(username).get();
+        AccountHolder accountHolder = accountHolderRepository.findByUsername(username).get();
         return accountRepository.checkBalance(accountHolder);
     }
 
     public List<Object[]> myAccount(String username) {
-        if (accountRepository.findByUsername(username).isEmpty()){
+        if (accountHolderRepository.findByUsername(username).isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "This account/s doesn't exist or is/are not related to you.");
         }
-        AccountHolder accountHolder = accountRepository.findByUsername(username).get();
+        AccountHolder accountHolder = accountHolderRepository.findByUsername(username).get();
         List<Account> primaryAccounts = accountHolder.getPrimaryAccounts();
         List<Account> secondaryAccounts = accountHolder.getSecondaryAccounts();
         applyInterestOrMaintenance(primaryAccounts, secondaryAccounts);
@@ -213,7 +224,7 @@ public class AccountService {
     }
 
     public AccountHolder retrieveAccountHolder(String username, String errorMessage) {
-        return accountRepository.findByUsername(username)
+        return accountHolderRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, errorMessage));
     }
 

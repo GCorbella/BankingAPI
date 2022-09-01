@@ -1,6 +1,7 @@
 package com.bank.bank.models.utils;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Role {
@@ -8,13 +9,13 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String role;
-    @ManyToOne
+    @ManyToMany
     @JoinColumn(name = "user_id")
-    private User user;
+    private List<User> users;
 
-    public Role(String role, User user) {
+    public Role(String role, List<User> users) {
         this.role = role;
-        this.user = user;
+        this.users = users;
     }
 
     public Role() {
@@ -41,12 +42,12 @@ public class Role {
         this.role = role;
     }
 
-    public User getUser() {
-        return user;
+    public List<User> getUsers() {
+        return users;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 }
 
