@@ -36,14 +36,15 @@ public class SecurityConfiguration  {
         httpSecurity.httpBasic();
 
         httpSecurity.authorizeRequests()
-                .mvcMatchers(HttpMethod.PATCH, "/modify-password").hasAnyRole("USER", "ADMIN", "CONTRIBUTOR")
-                .mvcMatchers(HttpMethod.PATCH, "/make-contributor").hasAnyRole("ADMIN")
-                .mvcMatchers(HttpMethod.POST, "/new-post").hasAnyRole("ADMIN", "CONTRIBUTOR")
-                .mvcMatchers(HttpMethod.POST, "/new-author").hasAnyRole("ADMIN")
-                .mvcMatchers(HttpMethod.PATCH, "/update-post").hasAnyRole("ADMIN", "CONTRIBUTOR")
-                .mvcMatchers(HttpMethod.PATCH, "/update-author").hasAnyRole("ADMIN", "CONTRIBUTOR")
-                .mvcMatchers(HttpMethod.DELETE, "/delete-author").hasAnyRole("ADMIN")
-                .mvcMatchers(HttpMethod.DELETE, "/delete-post").hasAnyRole("ADMIN")
+                .mvcMatchers(HttpMethod.GET, "/check-balance").hasAnyRole("ADMIN")
+                .mvcMatchers(HttpMethod.GET, "/myaccount").hasAnyRole("USER")
+                .mvcMatchers(HttpMethod.GET, "/all-accounts").hasAnyRole("ADMIN")
+                .mvcMatchers(HttpMethod.POST, "/create-account").hasAnyRole("ADMIN")
+                .mvcMatchers(HttpMethod.PATCH, "/myaccount/transfer").hasAnyRole("USER")
+                .mvcMatchers(HttpMethod.PATCH, "/modify-balance").hasAnyRole("ADMIN")
+                .mvcMatchers(HttpMethod.PATCH, "/myaccount/send/{hashedKey}").hasAnyRole("USER")
+                .mvcMatchers(HttpMethod.DELETE, "/delete/{accountId}").hasAnyRole("ADMIN")
+                .mvcMatchers(HttpMethod.POST, "/new-third-party").hasAnyRole("ADMIN")
                 .anyRequest().permitAll();
 
         httpSecurity.csrf().disable();

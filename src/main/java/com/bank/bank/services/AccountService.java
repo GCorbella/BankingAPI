@@ -172,6 +172,14 @@ public class AccountService {
         return account;
     }
 
+    public void deleteAccount(String accountId) {
+        if (accountRepository.findById(accountId).isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no account with that ID.");
+        }
+        Account account = accountRepository.findById(accountId).get();
+        accountRepository.delete(account);
+    }
+
     //auxiliary methods
     public void applyInterestOrMaintenance(List<Account> primaryAccounts, List<Account> secondaryAccounts) {
         for (Account primaryAccount : primaryAccounts) {

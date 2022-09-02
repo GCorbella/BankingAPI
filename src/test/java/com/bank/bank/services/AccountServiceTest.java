@@ -1,4 +1,4 @@
 package com.bank.bank.services;
 
-public class SavingsService {
+public class AccountServiceTest {
 }

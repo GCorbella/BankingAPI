@@ -68,4 +68,10 @@ public class AccountController {
                                       @RequestParam String accountSecretKey) {
         AccountService.sendMoneyToThirdParty(hashedKey, userDetails.getUsername(), amount, accountId, accountSecretKey);
     }
+
+    @DeleteMapping("/delete/{accountId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteAccount(@PathVariable String accountId) {
+        accountService.deleteAccount(accountId);
+    }
 }
