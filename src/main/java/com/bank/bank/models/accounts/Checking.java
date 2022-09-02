@@ -21,7 +21,7 @@ public class Checking extends Account{
     @AttributeOverrides({@AttributeOverride(name = "currency", column = @Column(name = "monthly_maintenance_fee_currency")),
             @AttributeOverride(name = "amount", column = @Column(name = "monthly_maintenance_fee_amount"))})
     private Money monthlyMaintenanceFee = new Money(BigDecimal.valueOf(12));
-    private LocalDate MaintenanceDate = this.getCreationDate();
+    private LocalDate MaintenanceDate = LocalDate.now();
 
     //constructors
     public Checking() {
@@ -38,6 +38,16 @@ public class Checking extends Account{
 
     public Checking(String string) {
         setId(string);
+    }
+
+    public Checking(String id, Money money, String secretKey, AccountHolder primaryHolder,
+                    AccountHolder secondaryHolder, boolean status) {
+    setId(id);
+    setBalance(money);
+    setSecretKey(secretKey);
+    setPrimaryOwner(primaryHolder);
+    setSecondaryOwner(secondaryHolder);
+    setStatus(status);
     }
 
     //methods

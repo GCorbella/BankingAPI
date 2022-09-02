@@ -17,7 +17,27 @@ public class AccountHolderDTO {
     String phoneNumber;
     String eMail;
 
+    //constructors
     public AccountHolderDTO() {
+    }
+
+    public AccountHolderDTO(String username, String password, String firstName, String lastName,
+                            LocalDate dateOfBirth, String street, int portal, String streetOtherInfo,
+                            String mailingStreet, int mailingPortal, String mailingStreetOtherInfo,
+                            String phoneNumber, String eMail) {
+        this.username = username;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+        this.street = street;
+        this.portal = portal;
+        this.streetOtherInfo = streetOtherInfo;
+        this.mailingStreet = mailingStreet;
+        this.mailingPortal = mailingPortal;
+        this.mailingStreetOtherInfo = mailingStreetOtherInfo;
+        this.phoneNumber = phoneNumber;
+        this.eMail = eMail;
     }
 
     //setters

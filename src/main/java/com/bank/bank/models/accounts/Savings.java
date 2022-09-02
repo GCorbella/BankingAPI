@@ -17,6 +17,7 @@ public class Savings extends Account{
     @AttributeOverrides({@AttributeOverride(name = "currency", column = @Column(name = "penalty_fee_currency")),
             @AttributeOverride(name = "amount", column = @Column(name = "penalty_fee_amount"))})
     private Money penaltyFee = new Money(BigDecimal.valueOf(40));
+    @Column(precision = 19, scale = 4)
     private BigDecimal interestRate = BigDecimal.valueOf(0.0025); //the default value of the interest rate is 0.0025, and the maximum is 0.5
     private LocalDate interestDate = getCreationDate();
 
@@ -40,6 +41,16 @@ public class Savings extends Account{
         setId(string);
     }
 
+    public Savings(String id, Money money, String secretKey, AccountHolder primaryHolder,
+                   AccountHolder secondaryHolder, boolean status) {
+        setId(id);
+        setBalance(money);
+        setSecretKey(secretKey);
+        setPrimaryOwner(primaryHolder);
+        setSecondaryOwner(secondaryHolder);
+        setStatus(status);
+    }
+
     //methods
     public void applyPenaltyFee() {
         this.setBalance(new Money(this.getBalance().decreaseAmount(penaltyFee.getAmount())));
@@ -48,7 +59,7 @@ public class Savings extends Account{
     public void applyInterest(){
         if (LocalDate.now().getYear() > this.getInterestDate().getYear()) {
             for (int i = LocalDate.now().getYear(); i > this.getInterestDate().getYear() ; i--) {
-                this.setBalance(new Money(this.getBalance().increaseAmount(this.getBalance().getAmount().multiply(interestRate.add(BigDecimal.valueOf(1))))));
+                this.setBalance(new Money(this.getBalance().increaseAmount(this.getBalance().getAmount().multiply(interestRate))));
             }
             setInterestDate(LocalDate.now());
         }

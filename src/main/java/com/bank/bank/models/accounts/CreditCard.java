@@ -41,6 +41,16 @@ public class CreditCard extends Account{
         setId(string);
     }
 
+    public CreditCard(String id, Money money, String secretKey, AccountHolder primaryHolder,
+                      AccountHolder secondaryHolder, boolean status) {
+        setId(id);
+        setBalance(money);
+        setSecretKey(secretKey);
+        setPrimaryOwner(primaryHolder);
+        setSecondaryOwner(secondaryHolder);
+        setStatus(status);
+    }
+
     //methods
     public void applyPenaltyFee() {
         this.setBalance(new Money(this.getBalance().decreaseAmount(penaltyFee.getAmount())));
@@ -50,7 +60,7 @@ public class CreditCard extends Account{
         if (LocalDate.now().getMonthValue() > this.getInterestDate().getMonthValue() &&
                 LocalDate.now().getYear() >= this.getInterestDate().getYear()) {
             for (int i = LocalDate.now().getMonthValue(); i > this.getInterestDate().getMonthValue() ; i--) {
-                this.setBalance(new Money(this.getBalance().increaseAmount(this.getBalance().getAmount().multiply(interestRate.add(BigDecimal.valueOf(1))))));
+                this.setBalance(new Money(this.getBalance().increaseAmount(this.getBalance().getAmount().multiply(interestRate))));
             }
             setInterestDate(LocalDate.now());
         }

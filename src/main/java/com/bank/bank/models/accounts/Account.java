@@ -20,7 +20,7 @@ public abstract class Account {
     @ManyToOne
     @JoinColumn(name = "secondary_owner")
     private AccountHolder secondaryOwner;
-    private LocalDate creationDate;
+    private LocalDate creationDate = LocalDate.now();
     private boolean Status;
 
     public Account() {
