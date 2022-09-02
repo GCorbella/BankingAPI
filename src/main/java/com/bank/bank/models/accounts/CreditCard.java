@@ -21,7 +21,7 @@ public class CreditCard extends Account{
     private Money penaltyFee = new Money(BigDecimal.valueOf(40));
     private LocalDate interestDate = getCreationDate();
 
-    //constructor
+    //constructors
     public CreditCard() {
     }
 
@@ -35,6 +35,10 @@ public class CreditCard extends Account{
         setStatus(status);
         setCreditLimit(creditLimit);
         setInterestRate(interestRate);
+    }
+
+    public CreditCard(String string) {
+        setId(string);
     }
 
     //methods
@@ -55,7 +59,7 @@ public class CreditCard extends Account{
     //setters
     @Override
     public void setId(String id){
-        setId("CRE-" + id);
+        super.id = "CRE-".concat(id);
     }
     public void setCreditLimit(Money creditLimit) {
         //the maximum credit limit is 100000. Also, if it's lower than 100, it stays at 100 or the credit card will be useless.

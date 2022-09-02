@@ -9,6 +9,7 @@ import java.time.LocalDate;
 @Entity
 public class StudentChecking extends Account{
 
+    //constructors
     public StudentChecking() {
     }
 
@@ -21,9 +22,13 @@ public class StudentChecking extends Account{
         setStatus(status);
     }
 
+    public StudentChecking(String string) {
+        setId(string);
+    }
+
     //setters
     @Override
     public void setId(String id){
-        setId("SCH-" + id);
+        super.id = "SCH-".concat(id);
     }
 }

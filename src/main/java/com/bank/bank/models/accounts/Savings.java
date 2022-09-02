@@ -36,6 +36,10 @@ public class Savings extends Account{
         setInterestRate(interestRate);
     }
 
+    public Savings(String string) {
+        setId(string);
+    }
+
     //methods
     public void applyPenaltyFee() {
         this.setBalance(new Money(this.getBalance().decreaseAmount(penaltyFee.getAmount())));
@@ -53,7 +57,7 @@ public class Savings extends Account{
     //setters
     @Override
     public void setId(String id){
-        setId("SAV-" + id);
+        super.id = "SAV-".concat(id);
     }
     public void setMinimumBalance(Money minimumBalance) {
         //the minimum balance must be 100, if it's less, the script will set 100 anyway.

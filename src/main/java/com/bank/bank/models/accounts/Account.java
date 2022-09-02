@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @Entity
 public abstract class Account {
     @Id
-    private String id;
+    protected String id;
     @Embedded
     private Money balance;
     private String secretKey;

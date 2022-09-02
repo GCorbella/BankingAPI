@@ -23,7 +23,7 @@ public class Checking extends Account{
     private Money monthlyMaintenanceFee = new Money(BigDecimal.valueOf(12));
     private LocalDate MaintenanceDate = this.getCreationDate();
 
-    //constructor
+    //constructors
     public Checking() {
     }
 
@@ -34,6 +34,10 @@ public class Checking extends Account{
         setPrimaryOwner(primaryOwner);
         setCreationDate(creationDate);
         setStatus(status);
+    }
+
+    public Checking(String string) {
+        setId(string);
     }
 
     //methods
@@ -53,7 +57,7 @@ public class Checking extends Account{
     //setters
     @Override
     public void setId(String id){
-        setId("CHE-" + id);
+        super.id = "CHE-".concat(id);
     }
     public void setMinimumBalance(Money minimumBalance) {
         this.minimumBalance = minimumBalance;
