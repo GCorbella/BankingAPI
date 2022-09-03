@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface AccountRepository extends JpaRepository<Account, String> {
 
-    @Query(value = "SELECT id, amount, currency FROM account WHERE primary_owner = accountHolder OR secondary_owner = accountHolder", nativeQuery = true)
+    @Query(value = "SELECT id, amount, currency FROM account WHERE primary_owner = ?1 OR secondary_owner = ?1", nativeQuery = true)
     List<Object[]> checkBalance(AccountHolder accountHolder);
 
     @Query(value = "SELECT id, primary_owner, secondary_owner FROM account", nativeQuery = true)

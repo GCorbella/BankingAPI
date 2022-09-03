@@ -1,10 +1,8 @@
 package com.bank.bank.services;
 
 import com.bank.bank.controllers.dto.AccountHolderDTO;
-import com.bank.bank.repositories.RoleRepository;
 import com.bank.bank.serializer.LocalDateDeserializer;
 import com.bank.bank.serializer.LocalDateSerializer;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.junit.jupiter.api.DisplayName;
@@ -29,13 +27,6 @@ public class AccountHolderServiceTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
-    @Autowired
-    private RoleRepository roleRepository;
-
-    private MockMvc mockMvc;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
     GsonBuilder gsonBuilder = new GsonBuilder()
             .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
             .registerTypeAdapter(LocalDate.class, new LocalDateSerializer());
@@ -45,7 +36,7 @@ public class AccountHolderServiceTest {
     @Test
     @DisplayName("Creating an AccountHolder.")
     public void createAccountHolder() throws Exception {
-        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         AccountHolderDTO accountHolderDTO = new AccountHolderDTO("gaita","gaita","Laia",
                 "Gaytera", LocalDate.of(2000, 3, 22), "Calle", 7,
                 "35667", "Calle", 7, "35667", "987654321",
@@ -56,7 +47,6 @@ public class AccountHolderServiceTest {
                 .content(body)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated()).andReturn();
-        System.out.println(mvcResult.getResponse().getContentAsString());
         assertTrue(mvcResult.getResponse().getContentAsString().contains("Gaytera"));
     }
 
