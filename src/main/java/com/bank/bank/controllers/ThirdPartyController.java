@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 public class ThirdPartyController {
 
     @Autowired
-    private final ThirdPartyService thirdPartyService;
+    ThirdPartyService thirdPartyService;
 
     public ThirdPartyController(ThirdPartyService thirdPartyService) {
         this.thirdPartyService = thirdPartyService;
@@ -25,7 +25,7 @@ public class ThirdPartyController {
     @PostMapping("/new-third-party")
     @ResponseStatus(HttpStatus.CREATED)
     public ThirdParty createThirdParty(@RequestParam String name, @RequestParam String hashedKey) {
-        return ThirdPartyService.createThirdParty(name, hashedKey);
+        return thirdPartyService.createThirdParty(name, hashedKey);
     }
 
     @PatchMapping("/send/{hashedKey}")
@@ -34,6 +34,6 @@ public class ThirdPartyController {
                                       @RequestParam int amount,
                                       @RequestParam String accountId,
                                       @RequestParam String accountSecretKey) {
-        ThirdPartyService.receiveFromThirdParty(hashedKey, amount, accountId, accountSecretKey);
+        thirdPartyService.receiveFromThirdParty(hashedKey, amount, accountId, accountSecretKey);
     }
 }

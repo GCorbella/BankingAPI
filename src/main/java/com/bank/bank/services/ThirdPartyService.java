@@ -18,20 +18,20 @@ import java.math.BigDecimal;
 public class ThirdPartyService {
 
     @Autowired
-    private static ThirdPartyRepository thirdPartyRepository;
+    ThirdPartyRepository thirdPartyRepository;
     @Autowired
-    private static AccountRepository accountRepository;
+    AccountRepository accountRepository;
 
     static PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public static ThirdParty createThirdParty(String name, String hashedKey) {
+    public ThirdParty createThirdParty(String name, String hashedKey) {
         ThirdParty thirdParty = new ThirdParty(name,
                 passwordEncoder.encode(hashedKey));
         thirdPartyRepository.save(thirdParty);
         return thirdParty;
     }
 
-    public static void receiveFromThirdParty(String hashedKey, int amount, String accountId, String accountSecretKey) {
+    public void receiveFromThirdParty(String hashedKey, int amount, String accountId, String accountSecretKey) {
         if (thirdPartyRepository.findByHashedKey(hashedKey).isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong Hashed Key");
         }
@@ -43,5 +43,6 @@ public class ThirdPartyService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This account doesn't exist and/or the secret key is wrong.");
         }
         account.setBalance(new Money(account.getBalance().increaseAmount(new BigDecimal(amount))));
+        accountRepository.save(account);
     }
 }
