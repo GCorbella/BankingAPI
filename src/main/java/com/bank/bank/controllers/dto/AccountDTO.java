@@ -18,6 +18,13 @@ public class AccountDTO {
     public AccountDTO() {
     }
 
+    public AccountDTO(String accountType, String id, Money balance, String secretKey) {
+        this.accountType = accountType;
+        this.id = id;
+        this.balance = balance;
+        this.secretKey = secretKey;
+    }
+
     //setters
     public void setAccountType(String accountType) {
         this.accountType = accountType;
