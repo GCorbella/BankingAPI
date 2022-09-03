@@ -153,6 +153,7 @@ public class AccountService {
 
         originAccount.setBalance(new Money(originAccount.getBalance().decreaseAmount(transferInfo.getAmount())));
         destinyAccount.setBalance(new Money(destinyAccount.getBalance().increaseAmount(transferInfo.getAmount())));
+        accountRepository.save(destinyAccount);
 
         if (originAccount instanceof Checking || originAccount instanceof Savings) {
             if (originAccount.getBalance().getAmount().compareTo(((Checking) originAccount).getMinimumBalance().getAmount()) < 0) {
@@ -161,6 +162,7 @@ public class AccountService {
                 ((Savings) originAccount).applyPenaltyFee();
             }
         }
+        accountRepository.save(originAccount);
     }
 
     public Account modifyBalance(String accountId, BigDecimal newBalance) {
@@ -169,6 +171,7 @@ public class AccountService {
         }
         Account account = accountRepository.findById(accountId).get();
         account.setBalance(new Money(newBalance));
+        accountRepository.save(account);
         return account;
     }
 
@@ -190,6 +193,7 @@ public class AccountService {
             } else if (primaryAccount instanceof Checking) {
                 ((Checking) primaryAccount).applyMaintenanceFee();
             }
+            accountRepository.save(primaryAccount);
         }
         for (Account secondaryAccount : secondaryAccounts) {
             if (secondaryAccount instanceof Savings) {
@@ -199,6 +203,7 @@ public class AccountService {
             } else if (secondaryAccount instanceof Checking) {
                 ((Checking) secondaryAccount).applyMaintenanceFee();
             }
+            accountRepository.save(secondaryAccount);
         }
 
     }
