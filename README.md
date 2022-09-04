@@ -150,14 +150,14 @@ Their interest system is equal to the one of the Savings account but is added mo
 
 ### Routes and Methods
 
-#### *"/new-user"*
+#### */new-user*
 
 This route allow anyone to create a new Account Holder, introducing the data need it to do so.
 If the next data is not correct, the API could throw the next exceptions:
 
 1. 403 FORBIDDEN. If the age of the new user is lesser than 18 years old.
 
-#### *"/create-account"*
+#### */create-account*
 
 ADMIN only access. This route allow to create a new account binding it to an Account Holder entered as a parameter for the request. 
 The API could throw the next exceptions:
@@ -165,7 +165,7 @@ The API could throw the next exceptions:
 1. 404 NOT FOUND. If the ID of the Account Holder introduced is not found on the database.
 2. 400 BAD REQUEST. If the kind of account you want to create is not entered correctly *(checking, savings, creditcard all in lowercase)*.
 
-#### *"/myaccount"*
+#### */myaccount*
 
 USER only access. This route allow the Account Holder to check the balance in all the accounts he is owner of. Also, it will apply the interest
 and maintenance fees need it since the last time they should be applied *(Because we work asynchronously, it's the only way it could be made)*.
@@ -175,32 +175,32 @@ It could throw the next exceptions:
 
 1. 404 NOT FOUND. If the username introduced doesn't have any accounts bound to it.
 
-#### *"/all-accounts"*
+#### */all-accounts*
 
 ADMIN only access. This route will show a list of every account in the database and its owner.
 
-#### *"/check-balance"*
+#### */check-balance*
 
 ADMIN only access. This route will show the balance of all the accounts of the Account Holder username introduced.
 This method could throw the next exception:
 
 1. 404 NOT FOUND. If there aren't any Account Holder with that username in the database.
 
-#### *"/modify-balance"*
+#### */modify-balance*
 
 ADMIN only access. This route allows an Admin to manually change the balance of the account introduced as a parameter.
 It could throw the next exception:
 
 1. 404 NOT FOUND. If there aren't any account with that ID in the database.
 
-#### *"/delete/{accountId}"*
+#### */delete/{accountId}*
 
 ADMIN only access. This route allows an Admin to completely delete the account associated with the account ID entered as a parameter for the request.
 It could throw the next exception:
 
 1. 404 NOT FOUND. If there aren't any account with that ID in the database.
 
-#### *"/myaccount/transfer"*
+#### */myaccount/transfer*
 
 USER only access. This route allow the Account Holder to send money form one of his accounts to another account in the same 
 banking entity. It could throw the next exceptions:
